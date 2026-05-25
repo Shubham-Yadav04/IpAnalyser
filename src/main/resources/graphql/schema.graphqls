@@ -1,0 +1,15 @@
+type IpAnalyser{
+    country:String
+    ip:String
+    countryCode:String
+    continent:String
+    continentCode:String
+    network:String
+    isSatelliteProvider:Boolean
+    isAnonymousProxy:Boolean
+
+}
+
+type Query{
+    analyzeIp(ip:String!):IpAnalyser
+}
