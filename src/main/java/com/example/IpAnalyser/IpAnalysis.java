@@ -10,12 +10,10 @@ import lombok.*;
 public class IpAnalysis {
     long start;
     long end;
-    String continentCode;
-    String continent;
-    String countryCode;
-    String country;
-    Boolean isAnonymousProxy;
-    Boolean isSatelliteProvider;
-
-
+        String continentCode;
+        String continent;
+        String countryCode;
+        String country;
+        Boolean isAnonymousProxy;
+        Boolean isSatelliteProvider;
 }
