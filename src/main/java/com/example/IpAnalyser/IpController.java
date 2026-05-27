@@ -18,7 +18,6 @@ private final IpService ipService;
             IpAnalysis response= ipService.getCountry(ip);
             log.info("the country of the entered ip : {} is {}",ip,response.country);
             return response;
-
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

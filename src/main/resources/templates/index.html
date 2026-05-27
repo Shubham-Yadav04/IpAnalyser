@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>IpAnalyser</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            width: 500px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #3498db;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .result-box h3 {
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+
+        .result-item {
+            margin-bottom: 10px;
+        }
+
+        .check-another {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .check-another button {
+            background: #27ae60;
+        }
+
+        .check-another button:hover {
+            background: #1e8449;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>IpAnalyser</h1>
+
+    <!-- Search Form -->
+    <form  method="post" onsubmit="searchIp(event)">
+
+        <div class="form-group">
+            <label>Enter IP Address</label>
+            <input type="text"
+                   id="ipInput"
+                   name="ipAddress"
+                   placeholder="e.g. 8.8.8.8"
+                   required>
+        </div>
+
+        <button type="submit" class="btn">
+            Search
+        </button>
+    </form>
+
+    <!-- Result Section -->
+    <div class="result-box" id="resultBox">
+
+        <h3>IP Details</h3>
+
+        <div class="result-item">
+            <strong>IP:</strong>
+            <span id="ip"></span>
+        </div>
+        <div class="result-item">
+            <strong>Country:</strong>
+            <span  id="country"></span>
+        </div>
+        <div class="result-item">
+
+            <strong>Continent:</strong>
+            <span id="continent"></span>
+        </div>
+        <!-- Check Another IP -->
+        <div class="check-another">
+                <button type="button" class="btn" onclick="resetSearch()">
+                    Check Another IP
+                </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+<script>
+    async function searchIp(event) {
+event.preventDefault();
+              const ip = document.getElementById("ipInput").value;
+
+      const query = `
+          query {
+              analyzeIp(ip: "${ip}") {
+                  ip
+                  continent
+                  country
+              }
+          }
+      `;
+
+      try {
+console.log("call the method")
+          const response = await fetch('http://localhost:8080/graphql', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  query: query
+              })
+          });
+
+          const result = await response.json();
+
+          const data = result.data.analyzeIp;
+          console.log("got the data ", data);
+
+          document.getElementById("ip").innerText = ip;
+          document.getElementById("continent").innerText = data.continent;
+          document.getElementById("country").innerText = data.country;
+          document.getElementById("resultBox").style.display = "block";
+
+      } catch (error) {
+          console.error("Error:", error);
+          alert("Failed to fetch IP details");
+      }
+  }
+
+  function resetSearch() {
+
+      document.getElementById("ipInput").value = "";
+
+      document.getElementById("resultBox").style.display = "none";
+  }
+
+</script>
+</html>
